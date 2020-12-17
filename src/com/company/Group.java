@@ -8,19 +8,19 @@ import java.util.Scanner;
 public class Group implements Voenkom, Serializable{
 
     private static final long serialVersionUID=1l;
-    private Student group[] =new Student[10];
-    private Student newGroup[];
+    private Student Students[] =new Student[10];
     private String nameGroup;
     private int k=0;
 
     public Group(){}
-    public void setGroup(Student[] group) {
-        this.group = group;
+
+    public Student[] getStudents() {
+
+        return Students;
     }
 
-    public Student[] getGroup() {
-
-        return group;
+    public void setStudents(Student[] Students) {
+        this.Students = Students;
     }
 
     public String getNameGroup() {
@@ -39,9 +39,9 @@ public class Group implements Voenkom, Serializable{
 
     public void addStudent (Student student) throws MyNewException{
 
-        for (int i = 0; i < group.length; i++) {
-            if (group[i] == null) {
-                group[i] = new Student(AddFact.newSurname(), AddFact.newName(), AddFact.newAge(), AddFact.newGender(),
+        for (int i = 0; i < Students.length; i++) {
+            if (Students[i] == null) {
+                Students[i] = new Student(AddFact.newSurname(), AddFact.newName(), AddFact.newAge(), AddFact.newGender(),
                         AddFact.newCourse(), AddFact.newRecordBook());
 
                 k++;
@@ -55,12 +55,12 @@ public class Group implements Voenkom, Serializable{
     }
 
     public Student[] sortSurname(){
-        Arrays.sort(group, Comparator.nullsFirst(new SurnameComparator()));
-            return group;
+        Arrays.sort(Students, Comparator.nullsFirst(new SurnameComparator()));
+        return Students;
     }
     public Student[] sortSurnameGender(){
-        Arrays.sort(group, Comparator.nullsFirst(new GenderComparator()));
-        return group;
+        Arrays.sort(Students, Comparator.nullsFirst(new GenderComparator()));
+        return Students;
     }
 
     public Student findStudent(){
@@ -68,11 +68,11 @@ public class Group implements Voenkom, Serializable{
         str.nextLine();
         System.out.println("Введите фамилию студента, которого хотите найти: ");
         String line = str.nextLine();
-        for(int i=0; i<group.length;i++){
-            if(group[i]!=null && line.equals(group[i].getSurname()))
+        for(int i = 0; i< Students.length; i++){
+            if(Students[i]!=null && line.equals(Students[i].getSurname()))
             {
                 System.out.println("Студент найден.");
-                return group[i];
+                return Students[i];
             }
         }
         return null;
@@ -82,9 +82,9 @@ public class Group implements Voenkom, Serializable{
         str.nextLine();
         System.out.println("Введите фамилию студента, которого хотите удалить: ");
         String line = str.nextLine();
-        for(int i=0; i<group.length; i++){
-            if(group[i]!=null && line.equals(group[i].getSurname())){
-                group[i]=null;
+        for(int i = 0; i< Students.length; i++){
+            if(Students[i]!=null && line.equals(Students[i].getSurname())){
+                Students[i]=null;
                 k--;
                 System.out.println("Студен удалён из этой группы. В группе "+k+" студ.");
             }
@@ -93,42 +93,38 @@ public class Group implements Voenkom, Serializable{
 
     public void saveToFile(){
         try(ObjectOutputStream OOS=new ObjectOutputStream(new FileOutputStream(getNameGroup()))){
-            OOS.writeObject(group);
+            OOS.writeObject(Students);
             System.out.println("Успешно сохранено");
-            group=new Student[10];
+            Students =new Student[10];
             k=0;
         } catch(IOException e){
             System.out.println("Ошибка при сохранение");
         }
     }
-    public void readFromFile(){
-
+    public Group readFromFile(){
+        Group readGroup=new Group();
+        Students=null;
         try (ObjectInputStream OIS=new ObjectInputStream(new FileInputStream(getNameGroup()))){
-            newGroup=(Student[]) OIS.readObject();
+            Students=(Student[]) OIS.readObject();
+            readGroup.setStudents(Students);
             System.out.println("Успешно считано");
+            return readGroup;
         } catch(IOException |
                 ClassNotFoundException e){
             System.out.println("Ошибка считывания");
         }
-        System.out.println();
-        System.out.println("Вывод данных считанного объекта");
-        System.out.println();
-        printgroup(newGroup);
+       return null;
     }
 
-    public static void printgroup(Student[] group){
-        for(Human k:group){
-            System.out.println(k);
-        }
-    }
+
 
     @Override
     public Student[] otbor() {
         Student[] voen=new Student[k];
         int n=0;
         for(int i=0; i<k; i++){
-            if(group[i].getGender().equals(Sex.man) && group[i].getAge()>18 ){
-                voen[0]=group[i];
+            if(Students[i].getGender().equals(Sex.man) && Students[i].getAge()>18 ){
+                voen[0]= Students[i];
                 n++;
             }
         }
@@ -144,7 +140,7 @@ public class Group implements Voenkom, Serializable{
     @Override
     public String toString() {
         return "Group{" +
-                "group=" + Arrays.toString(group) +
+                "Students=" + Arrays.toString(Students) +
                 '}';
     }
 
