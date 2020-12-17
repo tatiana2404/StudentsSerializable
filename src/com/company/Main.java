@@ -3,9 +3,6 @@ package com.company;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import static java.lang.System.exit;
-import static java.lang.System.setOut;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -50,14 +47,19 @@ public class Main {
                         }
                         break;
                     case 6:
-                        voen.setGroup(group.otbor());
+                        voen.setStudents(group.otbor());
                         System.out.println(voen.toString());
                         break;
                     case 7:
                         group.saveToFile();
                         break;
                     case 8:
-                        newGroup.readFromFile();
+                        try {
+                            group.readFromFile();
+                            System.out.println(newGroup.toString());
+                        }catch (NullPointerException e){
+                            System.out.println("Файл пуст");
+                        }
                         break;
                     case 9:
                         return;
